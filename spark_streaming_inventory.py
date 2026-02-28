@@ -30,7 +30,7 @@ inventory_schema = StructType([
 # -----------------------------
 df_raw = spark.readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("kafka.bootstrap.servers", "kafka:9092") \
     .option("subscribe", "inventory_events") \
     .option("startingOffsets", "latest") \
     .load()
@@ -49,7 +49,7 @@ df_parsed = df_json.select(
 def write_to_postgres(batch_df, batch_id):
     batch_df.write \
         .format("jdbc") \
-        .option("url", "jdbc:postgresql://localhost:5432/logistics_dw") \
+        .option("url", "jdbc:postgresql://postgres:5432/logistics_dw") \
         .option("dbtable", "fact_inventory") \
         .option("user", "admin") \
         .option("password", "admin") \
