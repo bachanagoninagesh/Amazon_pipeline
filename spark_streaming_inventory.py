@@ -30,7 +30,7 @@ inventory_schema = StructType([
 # -----------------------------
 df_raw = spark.readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "kafka:9092") \
+    .option("kafka.bootstrap.servers", "kafka:29092") \
     .option("subscribe", "inventory_events") \
     .option("startingOffsets", "latest") \
     .load()
@@ -60,6 +60,7 @@ def write_to_postgres(batch_df, batch_id):
 query = df_parsed.writeStream \
     .foreachBatch(write_to_postgres) \
     .outputMode("append") \
+    .option("checkpointLocation", "/opt/spark-apps/checkpoints/inventory")\
     .start()
 
 query.awaitTermination()
